@@ -5,7 +5,7 @@ A posterior analysis is done on the target against the topic model formed from t
 Statistics are calculated on the topical distribution of the target.
 Once all documents have had the statistics calculated they are compared.
 In this prototype of the system, rotationalLDA is employed as a classifier to determine topical similarity among documents in a corpus.
-Th eapplication uses R and needs the following libraries:<br/>
+The application uses R and needs the following libraries:<br/>
 install.packages("ggraph")<br/>
 install.packages("gutenbergr")<br/>
 install.packages("rlist")<br/>
