@@ -35,36 +35,28 @@ append_books<-function(gmr1, gmr2){
 #2.) TIDY_UP
 #row by row format
 tidy_up<-function(fn_bks){
-   print("in tidy up")
-   print(head(fn_bks))
    gmr_word <- fn_bks %>%
      unnest_tokens(word, text)
 
-   print("looking for joining by word")
    #this joins by word
    gmr_word_counts <- gmr_word %>%
      anti_join(stop_words) %>%
      dplyr::count(document, word, sort = TRUE) %>%
      ungroup()
 
-   print("before cast dtm")
    gmr_dtm <- gmr_word_counts %>%
      cast_dtm(document, word, n)
-   print("after cast dtm")
 
    return(gmr_dtm)
 }
 
 #3.) GET_LDA
 get_lda<-function(gmrK, fn_bks, target_fn) {
-   #print("in lda")
    #get corpus as dtm
    nt_dtm<-tidy_up(fn_bks)
 
-   #print("before LDA")
    #create topic model
    nt_lda <- LDA(nt_dtm, k = gmrK, control = list(seed = 1234))
-   #print("After LDA")
    gmrPerplex<-perplexity(nt_lda)
 
    #This is for later research on what the 38 topics mean 
@@ -89,20 +81,9 @@ get_lda<-function(gmrK, fn_bks, target_fn) {
 
 #4.) SPLIT_BOOKS
 target_split<-function(target, tidy_books){
-   print("before tidy Books")
-   print(head(tidy_books))
-   print(unique(tidy_books$gutenberg_id))
    #divide corpus into target and all others
    target_book<- subset(tidy_books,gutenberg_id==target)
-   print(c("target book len",length(target_book)))
-   print(head(target_book))
-   print(unique(target_book$gutenberg_id))
-
    nt_bks<- subset(tidy_books,!gutenberg_id==target) 
-   print(c("other corpus len", length(nt_bks)))
-   print(head(nt_bks))
-   print(unique(nt_bks$gutenberg_id))
-
 
    nt_bks$document<-" "
    target_book$document<- " "
@@ -121,7 +102,6 @@ target_split<-function(target, tidy_books){
 
 #5.) SPLIT_PAUL
 split_paul<-function(){
-   #print("in paul split")
    pauline<-vector()
    notpaul<-vector()
    pauline_idx<-c(6:18)
@@ -144,7 +124,6 @@ split_paul<-function(){
 
 #6.) INSPECT_TARGET dsitribution for ...
 inspect_target<-function(target_topics, topics_df, target, pauline_books) {
-   #print("in inspect")
    #show the books related to target
    #loop through target book distribution over topics
    ret_df<-data.frame()
@@ -160,15 +139,10 @@ inspect_target<-function(target_topics, topics_df, target, pauline_books) {
       }
       else { # if intersect of tb with paul is 0, ie this topic did not generate a Pauline book
          if(length(tb)>1){
-            print("before")
-            print(tb)
-            print(pauline_books)
             x<-intersect(tb,pauline_books)
-            print("after")
             if(length(x)> 0){ #here we have a topic that does generate a book
               tb<-x
             } else {
-              print("tb from tb[1]")
               tb<-tb[1]
          }
        }
@@ -184,7 +158,6 @@ inspect_target<-function(target_topics, topics_df, target, pauline_books) {
 
 #7.) GET_PROPORTIONS
 get_proportions<-function(target, K, top_topics, tidy_books) {
-   #print("in get")
    #Each nt book comes through as target and corpus is all other books
    tar_nto<-target_split(target, tidy_books)
 
@@ -200,7 +173,7 @@ get_proportions<-function(target, K, top_topics, tidy_books) {
        topics_df<-rbind(topics_df, unname(sort_gamma[i,]))
     }
    } 
-   #appropriately names the columns in topics_df of corpus
+   #appropriately name the columns in topics_df of corpus
    names(topics_df)<-c("document","topic","gamma")
 
    #split the 26 book in this iteration of the corpus into Paul, Not Paul
@@ -208,7 +181,6 @@ get_proportions<-function(target, K, top_topics, tidy_books) {
 
    #get names of nt book associated with gutenberg_id
    pauline_books<-unname(G_ids()$book_map[as.character(paul_split$pauline)])
-
 
    #now work on posterior results, ie target distribution here 
    post_topics<-gmr_lda$post$topics
@@ -223,7 +195,6 @@ get_proportions<-function(target, K, top_topics, tidy_books) {
 
    #only use the top x number of topics - those with heaviest weight, x held in constant top_topics
    target_topics<-head(sort_post,n=top_topics)
-
 
    #Find topics in target dist that also generated paul
    return(inspect_target(target_topics, topics_df, target, pauline_books))
@@ -245,7 +216,6 @@ G_ids<-function() {
    names(book_mapN)<- book_names
 
    retList<-list("Num_Books"= Num_Books, "Num_Books_loop" = Num_Books_loop, "book_map" = book_map, "book_mapN" = book_mapN)
-
    return(retList)
 }
 
