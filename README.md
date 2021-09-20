@@ -6,7 +6,7 @@ Statistics are calculated on the topical distribution of the target.
 Once all documents have had the statistics calculated they are compared.
 In this prototype of the system, rotationalLDA is employed as a classifier to determine topical similarity among documents in a corpus.
 Th eapplication uses R and needs the following libraries:
-install.packages("ggraph")\n
+install.packages("ggraph")<br/>
 install.packages("gutenbergr")
 install.packages("rlist")
 install.packages("tidytext")
