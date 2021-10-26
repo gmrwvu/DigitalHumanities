@@ -38,6 +38,18 @@ tidy_up<-function(fn_bks){
    gmr_word <- fn_bks %>%
      unnest_tokens(word, text)
 
+   #remove verse numbering here
+   tfl<-length(gmr_word$word)
+   for (m in tfl:1) {
+      if(substr(gmr_word$word[m],1,1) %in% c(1,2,3,4,5,6,7,8,9,0)){
+       #if it is 1 then remove from hb.trifreq
+       print(c(m,gmr_word$word[m]))
+       print(gmr_word[m,])
+       gmr_word<-gmr_word[-m,]
+
+      }
+   } 
+
    #this joins by word
    gmr_word_counts <- gmr_word %>%
      anti_join(stop_words) %>%
@@ -59,13 +71,18 @@ get_lda<-function(gmrK, fn_bks, target_fn) {
    nt_lda <- LDA(nt_dtm, k = gmrK, control = list(seed = 1234))
    gmrPerplex<-perplexity(nt_lda)
 
+
    #This is for later research on what the 38 topics mean 
    nt_topics <- tidy(nt_lda, matrix = "beta")
    top_terms <- nt_topics %>%
      group_by(topic) %>%
-     slice_max(beta, n = 10) %>% 
+     slice_max(beta, n = 30) %>% #magic cookie
      ungroup() %>%
      arrange(topic, -beta)
+
+   if(target_fn == "NA"){
+      return(top_terms)
+   }
 
    #Back to author study: which topics are associated with each document.
    books_gamma <- tidy(nt_lda, matrix = "gamma")
@@ -291,7 +308,7 @@ K<-38
 top_topics<- 5
 
 #============================================================
-#Main procesing loop
+#Main procesing loop for Hebrews Authorship
 #============================================================
 ntlist<-read_source("gutenberg")
 tidy_books<-convert_tidy(ntlist)
