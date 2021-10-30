@@ -43,8 +43,8 @@ tidy_up<-function(fn_bks){
    for (m in tfl:1) {
       if(substr(gmr_word$word[m],1,1) %in% c(1,2,3,4,5,6,7,8,9,0)){
        #if it is 1 then remove from hb.trifreq
-       print(c(m,gmr_word$word[m]))
-       print(gmr_word[m,])
+       #print(c(m,gmr_word$word[m]))
+       #print(gmr_word[m,])
        gmr_word<-gmr_word[-m,]
 
       }
@@ -245,7 +245,7 @@ G_ids<-function() {
 #https://github.com/ropensci/gutenbergr/issues/8
 #=============================================================
 read_source<-function(source) {
-  print(source)
+  #print(source)
   i=8347
   #gmr1<-as.data.frame(list(gutenberg_download(c(i))))
   gmr1<-as.data.frame(list(gutenberg_download(c(i),mirror = "http://mirrors.xmission.com/gutenberg/")))
