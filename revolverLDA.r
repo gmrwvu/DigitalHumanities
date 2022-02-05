@@ -43,8 +43,8 @@ tidy_up<-function(fn_bks){
    for (m in tfl:1) {
       if(substr(gmr_word$word[m],1,1) %in% c(1,2,3,4,5,6,7,8,9,0)){
        #if it is 1 then remove from hb.trifreq
-       #print(c(m,gmr_word$word[m]))
-       #print(gmr_word[m,])
+       print(c(m,gmr_word$word[m]))
+       print(gmr_word[m,])
        gmr_word<-gmr_word[-m,]
 
       }
@@ -72,7 +72,7 @@ get_lda<-function(gmrK, fn_bks, target_fn) {
    gmrPerplex<-perplexity(nt_lda)
 
 
-   #This is for later research on what the 38 topics mean 
+   #This is for later research on what the 42 topics mean 
    nt_topics <- tidy(nt_lda, matrix = "beta")
    top_terms <- nt_topics %>%
      group_by(topic) %>%
@@ -245,7 +245,7 @@ G_ids<-function() {
 #https://github.com/ropensci/gutenbergr/issues/8
 #=============================================================
 read_source<-function(source) {
-  #print(source)
+  print(source)
   i=8347
   #gmr1<-as.data.frame(list(gutenberg_download(c(i))))
   gmr1<-as.data.frame(list(gutenberg_download(c(i),mirror = "http://mirrors.xmission.com/gutenberg/")))
@@ -304,7 +304,7 @@ NTLEN<- length(G_ids()$Num_Books)
 n <- NTLEN
 commentary<-rep(46,27)
 #NUMBER OF TOPICS	
-K<-38
+K<-42
 top_topics<- 5
 
 #============================================================
@@ -329,3 +329,75 @@ for(m in 1:length(G_ids()$Num_Books)){
 }
 
 names(Process_Table)<-c("Target Book", "Pecentage of Topics Pauline")
+
+#============================================================
+#Main procesing loop for 42 topics
+#============================================================
+ntlist<-read_source("gutenberg")
+tidy_books<-convert_tidy(ntlist)
+gmrBooks<-target_split("99999", tidy_books) 
+#99999 is a book that doesn't exist
+
+gmr_word <- gmrBooks$nt_bks %>%
+     unnest_tokens(word, text)
+
+tfl<-length(gmr_word$word)
+for (m in tfl:1) {
+   if(substr(gmr_word$word[m],1,1) %in% c(1,2,3,4,5,6,7,8,9,0)){
+       #if it is 1 then remove from hb.trifreq
+       print(c(m,gmr_word$word[m]))
+       print(gmr_word[m,])
+       gmr_word<-gmr_word[-m,]
+
+   }
+} 
+
+
+gmr_word_counts <- gmr_word %>%
+     anti_join(stop_words) %>%
+     dplyr::count(document, word, sort = TRUE) %>%
+     ungroup()
+
+gmr_dtm <- gmr_word_counts %>%
+     cast_dtm(document, word, n)
+
+
+nt_lda <- LDA(gmr_dtm, k = K, control = list(seed = 1234))
+
+nt_topics <- tidy(nt_lda, matrix = "beta")
+top_terms <- nt_topics %>%
+     group_by(topic) %>%
+     slice_max(beta, n = 30) %>% #magic cookie
+     ungroup() %>%
+     arrange(topic, -beta)
+
+top_terms$term[top_terms$topic == 1]
+
+gmr<-filter(top_terms, topic ==5)
+
+#get terms unique to a topic
+
+for(j in 1:42){
+   gmr1<-filter(top_terms, topic ==j)
+   x<-gmr1$term
+   for(i in 1:42){
+      if(i != j){
+         gmrI<-filter(top_terms, topic ==i)
+         x<-setdiff(x, gmrI$term)
+      }
+   }
+   print(c("Topic",j,x))
+}
+
+#===========================================================
+tfl<-length(top_terms$term)
+for (m in tfl:1) {
+   if(substr(top_terms$term[m],1,1) %in% c(1,2,3,4,5,6,7,8,9,0)){
+       #if it is 1 then remove from hb.trifreq
+       print(c(m,top_terms$term[m]))
+       print(top_terms[m,])
+       top_terms<-top_terms[-m,]
+
+   }
+} 
+top_terms$term[top_terms$topic == 1]
