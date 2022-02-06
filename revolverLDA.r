@@ -11,7 +11,7 @@ library(stringr)
 
 #===============================================
 #Objects created:
-#     1.) ntlist is a listy of the 21 books, each element the text of the book
+#     1.) ntlist is a listy of the 27 books, each element the text of the book
 #     2.) nt_books is a df with 2 columns guten_id and text and the 20552 rows of nt
 #     3.) tidy_bks is df grouped by guten-id with chap and line#
 #     4.) tidy_books is an ungrouped tidy_bks
@@ -401,3 +401,7 @@ for (m in tfl:1) {
    }
 } 
 top_terms$term[top_terms$topic == 1]
+
+Process_Table
+
+
