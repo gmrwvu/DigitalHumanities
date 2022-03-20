@@ -237,21 +237,21 @@ for (j in other_ntlist_idx) {
    Other_Corpus<- rbind(Other_Corpus, ntlist[[j]])
 }
 
-#NEED TO CHANGE PAUL$GUTEN TO 8352 FOR ALL ELEMENTS
+#NEED TO USE PAUL$GUTEN AS ID
 size<-length(Paul_Corpus$gutenberg_id)
 for (k in 1:size){
    Paul_Corpus$gutenberg_id[k]<-8352
    Paul_Corpus$document[k]<-"paul"
 }
 
-#NEED TO CHANGE OTHER$GUTEN TO 8347 FOR ALL ELEMENTS
+#NEED TO USE OTHER$GUTEN AS ID
 size<-length(Other_Corpus$gutenberg_id)
 for (k in 1:size){
    Other_Corpus$gutenberg_id[k]<-8347
    Other_Corpus$document[k]<-"other"
 }
 
-#Combine the renumbered books into an NT_Corpus
+#Combine into an NT_Corpus
 NT_Corpus<-rbind(Paul_Corpus, Other_Corpus)
 
 #change to tidy format - linenumber chapter added
@@ -260,8 +260,6 @@ tidy_books<-convert_tidy(NT_Corpus)
 #target <- 8365
 
 
-
-#SLOW STEP
 #get corpus as dtm
 nt_dtm<-tidy_up(tidy_books)
 
@@ -282,7 +280,7 @@ gmrPerplex<-perplexity(nt_lda)
 
 books_gamma <- tidy(nt_lda, matrix = "gamma")
 
-#get the array of paulene proportions for each of the 50 topics
+#get the array of paulene proportions for each of the topics
 paulProbs<-books_gamma$gamma[books_gamma$document == "paul"]
 
 #now loop through NT books and write out each posterior result:
@@ -308,7 +306,7 @@ for (j in 1:27){
       sumPost <- sumPost + post_probs$topics[[k]]
    }
 
-   #get the weighted average of psaulene topics for a bopok
+   #get the weighted average of paulene topics for a book
    #this is the equivalent of a sumproduct of top[ics in the document times the paulene proportiopn in that dpocument
    sumPaul<-0
    for (k in 1:K){
