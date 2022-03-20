@@ -250,7 +250,7 @@ nt_dtm<-tidy_up(tidy_books)
 
 
 #get Perplex - k needs to be integre of atleast 2 by direction of LDA function
-for (K in 2:100){ 
+for (K in 2:50){ 
   nt_lda <- LDA(nt_dtm, k = K, control = list(seed = 1234))
   gmrPerplex<-perplexity(nt_lda)
   print(c(K, gmrPerplex))
