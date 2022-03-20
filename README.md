@@ -1,6 +1,5 @@
 # DigitalHumanities
-This application of LDA works on a corpus to compare the topical distribution of each document in that corpus against all the other documents.
-Each document becomes the target document while the others are formed into a topic model using LDA.
+This application of LDA works on a corpus to compare the topical distribution of each document in that corpus with that of the other documents.
 A posterior analysis is done on the target against the topic model formed from the others.
 Statistics are calculated on the topical distribution of the target.
 Once all documents have had the statistics calculated they are compared.
