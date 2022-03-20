@@ -34,8 +34,8 @@ G_ids<-function() {
 #2.) READ SOURCE
 #=============================================================
 #Read each NT book from Gutenberg project - get rid of commentary
-#aleph goes down once a week
-#if so uncomment the mirror and comment default
+#aleph goes down form time to time
+#if so use the mirror
 #mirror = "http://mirrors.xmission.com/gutenberg/"
 #https://github.com/ropensci/gutenbergr/issues/8
 #=============================================================
