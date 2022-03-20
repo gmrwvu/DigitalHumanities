@@ -164,21 +164,6 @@ tidy_up<-function(fn_bks){
    gmr_word <- fn_bks %>%
      unnest_tokens(word, text)
 
-   #THIS STEP TAKES A LONG TIME
-   #remove verse numbering here
-#   tfl<-length(gmr_word$word)
-#   for (m in tfl:1) {
-#      if(substr(gmr_word$word[m],1,1) %in% c(1,2,3,4,5,6,7,8,9,0)){
-#       #if it is 1 then remove from hb.trifreq
-#       print(c(m,gmr_word$word[m]))
-#       print(gmr_word[m,])
-#       gmr_word<-gmr_word[-m,]
-#
-#      }
-#   } 
-
-
-   #this joins by word
    gmr_word_counts <- gmr_word %>%
      anti_join(stop_words) %>%
      dplyr::count(document, word, sort = TRUE) %>%
