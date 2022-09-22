@@ -211,7 +211,7 @@ for (j in paul_ntlist_idx) {
    Paul_Corpus<- rbind(Paul_Corpus, ntlist[[j]])
 }
 #use the print from for to validate the end dataframe as having correct length
-#need to make sure the follwoing is all 8352
+#need to make sure the follwoing is all 8352 to 8364
 Paul_Corpus$gutenberg_id
 
 #collect all the non-paul books into a dataframe so can renumber guten_id 
